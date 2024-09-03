@@ -19,11 +19,11 @@ import { GetUser } from 'src/auth/get-user.decorator';
 import { Users } from 'src/auth/user.entity';
 
 @Controller('tasks')
+@UseGuards(AuthGuard())
 export class TasksController {
   constructor(private tasksService: TasksService) {}
 
   @Get()
-  @UseGuards(AuthGuard())
   getTasks(
     @Query() filterTaskDto: FilterTaskDto,
     @GetUser() user: Users,
@@ -32,7 +32,6 @@ export class TasksController {
   }
 
   @Post()
-  @UseGuards(AuthGuard())
   createTask(
     @Body() createTaskDto: CreateTaskDto,
     @GetUser() user: Users,
@@ -41,13 +40,11 @@ export class TasksController {
   }
 
   @Get('/:id')
-  @UseGuards(AuthGuard())
   getTaskById(@Param('id') id: string, @GetUser() user: Users): Promise<Task> {
     return this.tasksService.getTaskById(id, user);
   }
 
   @Delete('/:id')
-  @UseGuards(AuthGuard())
   deleteTaskById(
     @Param('id') id: string,
     @GetUser() user: Users,
@@ -56,7 +53,6 @@ export class TasksController {
   }
 
   @Patch('/:id')
-  @UseGuards(AuthGuard())
   updateStatus(
     @Param('id') id: string,
     @Body() updateStatusDto: UpdateStatusDto,
