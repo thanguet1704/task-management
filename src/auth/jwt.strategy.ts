@@ -12,7 +12,7 @@ export class JwtStategy extends PassportStrategy(Strategy) {
     @InjectRepository(UserRepository) private userRepository: UserRepository,
   ) {
     super({
-      secretOrKey: 'topSecret23',
+      secretOrKey: process.env.JWT_SECRET,
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
     });

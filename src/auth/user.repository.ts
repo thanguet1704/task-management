@@ -5,10 +5,13 @@ import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import {
   ConflictException,
   InternalServerErrorException,
+  Logger,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 export class UserRepository extends Repository<Users> {
+  private logger = new Logger('AuthController');
+
   constructor(@InjectRepository(Users) private repository: Repository<Users>) {
     super(repository.target, repository.manager, repository.queryRunner);
   }
@@ -23,10 +26,13 @@ export class UserRepository extends Repository<Users> {
 
     try {
       await this.repository.save(user);
+      this.logger.log('User create account');
     } catch (error) {
       if (error.code === '23505') {
+        this.logger.verbose(`Username: ${username} already exists`);
         throw new ConflictException('Username already exists');
       } else {
+        this.logger.error('Server error');
         throw new InternalServerErrorException();
       }
     }
